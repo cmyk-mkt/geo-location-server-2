@@ -1,12 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicial</title>
+    <title>Mapa com Leaflet</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        /* Estilo para o mapa */
+        #map {
+            height: 400px; /* Altura do mapa */
+            width: 100%;   /* Largura do mapa */
+            margin-bottom: 20px;
+        }
+        /* Estilo para o formulário */
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bem-vindo ao meu site!</h1>
-    <p>Esta é a página inicial.</p>
+    <h1>Mapa Interativo</h1>
+    <!-- Div para o mapa -->
+    <div id="map"></div>
+
+    <!-- Formulário -->
+    <form id="polygonForm">
+        <!-- Input hidden para user_ID -->
+        <input type="hidden" id="user_ID" name="user_ID" value="4fe2c2">
+
+        <!-- Input para o nome do polígono -->
+        <label for="name">Nome do Polígono:</label>
+        <input type="text" id="name" name="name" required>
+
+        <!-- Textarea para as coordenadas -->
+        <label for="coordinates">Coordenadas:</label>
+        <textarea id="coordinates" name="coordinates" rows="4" required></textarea>
+
+        <!-- Select para a cor do polígono -->
+        <label for="color">Cor do Polígono:</label>
+        <select id="color" name="color" required>
+            <option value="red">Vermelho</option>
+            <option value="blue">Azul</option>
+            <option value="green">Verde</option>
+            <option value="yellow">Amarelo</option>
+            <option value="orange">Laranja</option>
+            <option value="purple">Roxo</option>
+            <option value="pink">Rosa</option>
+            <option value="brown">Marrom</option>
+            <option value="black">Preto</option>
+            <option value="gray">Cinza</option>
+        </select>
+
+        <!-- Botão de envio -->
+        <button type="submit">Enviar Polígono</button>
+    </form>
+
+    <!-- Script para inicializar o mapa e o formulário -->
+    <script>
+        // Coordenadas do centro do mapa
+        const centerCoordinates = [-27.592177, -48.560589];
+
+        // Inicializar o mapa
+        const map = L.map('map').setView(centerCoordinates, 13);
+
+        // Adicionar o tile layer (mapa base)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Evento de envio do formulário
+        document.getElementById('polygonForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Evitar o envio padrão do formulário
+
+            // Capturar os valores do formulário
+            const userID = document.getElementById('user_ID').value;
+            const name = document.getElementById('name').value;
+            const coordinates = document.getElementById('coordinates').value;
+            const color = document.getElementById('color').value;
+
+            // Exibir os dados no console (para teste)
+            console.log({
+                user_ID: userID,
+                name: name,
+                coordinates: coordinates,
+                color: color
+            });
+
+            // Aqui você pode adicionar a lógica para processar os dados do polígono
+            // Por exemplo, desenhar o polígono no mapa
+            alert('Polígono enviado com sucesso!');
+        });
+    </script>
 </body>
 </html>
