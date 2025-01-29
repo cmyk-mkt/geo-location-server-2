@@ -78,38 +78,59 @@
 
     <!-- Script para inicializar o mapa e o formulário -->
     <script>
-        // Coordenadas do centro do mapa
-        const centerCoordinates = [-27.592177, -48.560589];
-
-        // Inicializar o mapa
-        const map = L.map('map').setView(centerCoordinates, 13);
-
-        // Adicionar o tile layer (mapa base)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Evento de envio do formulário
-        document.getElementById('polygonForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Evitar o envio padrão do formulário
-
-            // Capturar os valores do formulário
-            const userID = document.getElementById('user_ID').value;
-            const name = document.getElementById('name').value;
-            const coordinates = document.getElementById('coordinates').value;
-            const color = document.getElementById('color').value;
-
-            // Exibir os dados no console (para teste)
-            console.log({
-                user_ID: userID,
-                name: name,
-                coordinates: coordinates,
-                color: color
+        async function loadLeaflet() {
+            // Carregar o Leaflet dinamicamente
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
             });
-
-            // Aqui você pode adicionar a lógica para processar os dados do polígono
-            // Por exemplo, desenhar o polígono no mapa
-            alert('Polígono enviado com sucesso!');
+    
+            // Inicializar o mapa após o carregamento do Leaflet
+            initMap();
+        }
+    
+        function initMap() {
+            // Coordenadas do centro do mapa
+            const centerCoordinates = [-27.592177, -48.560589];
+    
+            // Inicializar o mapa
+            const map = L.map('map').setView(centerCoordinates, 13);
+    
+            // Adicionar o tile layer (mapa base)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+    
+            // Evento de envio do formulário
+            document.getElementById('polygonForm').addEventListener('submit', function (event) {
+                event.preventDefault(); // Evitar o envio padrão do formulário
+    
+                // Capturar os valores do formulário
+                const userID = document.getElementById('user_ID').value;
+                const name = document.getElementById('name').value;
+                const coordinates = document.getElementById('coordinates').value;
+                const color = document.getElementById('color').value;
+    
+                // Exibir os dados no console (para teste)
+                console.log({
+                    user_ID: userID,
+                    name: name,
+                    coordinates: coordinates,
+                    color: color
+                });
+    
+                // Aqui você pode adicionar a lógica para processar os dados do polígono
+                // Por exemplo, desenhar o polígono no mapa
+                alert('Polígono enviado com sucesso!');
+            });
+        }
+    
+        // Iniciar o carregamento do Leaflet
+        loadLeaflet().catch(error => {
+            console.error('Erro ao carregar o Leaflet:', error);
         });
     </script>
 </body>
