@@ -6,6 +6,8 @@
     <title>Mapa com Leaflet</title>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Axios -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         /* Estilo para o mapa */
         #map {
@@ -148,20 +150,36 @@
                 // Capturar os valores do formulário
                 const userID = document.getElementById('user_ID').value;
                 const name = document.getElementById('name').value;
-                const coordinates = document.getElementById('coordinates').value;
-                const color = document.getElementById('color').value;
+                const coordinates = coordinatesArray;
+                const color = document.getElementById('color').value || 'red'; // Cor padrão: vermelho
 
-                // Exibir os dados no console (para teste)
-                console.log({
+                // Verificar se o nome do polígono foi inserido
+                if (!name) {
+                    alert('Por favor, insira o nome do polígono.');
+                    return;
+                }
+
+                // Verificar se há pelo menos 3 pontos
+                if (coordinates.length < 3) {
+                    alert('O polígono deve ter pelo menos 3 pontos.');
+                    return;
+                }
+
+                // Enviar os dados para o backend
+                axios.post('/insert-polygon', {
                     user_ID: userID,
                     name: name,
                     coordinates: coordinates,
                     color: color
+                })
+                .then(response => {
+                    alert('Polígono salvo com sucesso!');
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    alert('Erro ao salvar o polígono.');
+                    console.error(error);
                 });
-
-                // Aqui você pode adicionar a lógica para processar os dados do polígono
-                // Por exemplo, enviar os dados para um servidor
-                alert('Polígono enviado com sucesso!');
             });
         }
 
