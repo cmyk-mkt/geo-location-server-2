@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 import os
-import geopandas as gpd
+import pandas as pd
 from shapely.geometry import Polygon
 
 app = Flask(__name__)
@@ -25,8 +25,12 @@ def insert_polygon():
     # Converter as coordenadas para um polígono
     polygon = Polygon([(coord['lng'], coord['lat']) for coord in coordinates])
 
-    # Criar um GeoDataFrame
-    gdf = gpd.GeoDataFrame({'name': [name], 'color': [color], 'geometry': [polygon]})
+    # Criar um DataFrame
+    df = pd.DataFrame({
+        'name': [name],
+        'color': [color],
+        'geometry': [polygon.wkt]  # Salvar a geometria como WKT
+    })
 
     # Caminho do arquivo CSV
     csv_path = os.path.join(POLYGONS_DIR, f'{user_ID}.csv')
@@ -34,14 +38,14 @@ def insert_polygon():
     # Verificar se o arquivo já existe
     if os.path.exists(csv_path):
         # Carregar o arquivo existente e adicionar o novo polígono
-        existing_gdf = gpd.read_file(csv_path)
-        gdf = gpd.GeoDataFrame(existing_gdf.append(gdf, ignore_index=True))
+        existing_df = pd.read_csv(csv_path)
+        df = pd.concat([existing_df, df], ignore_index=True)
     else:
         # Criar um novo arquivo CSV
-        gdf.crs = 'EPSG:4326'  # Definir o sistema de coordenadas
+        pass
 
-    # Salvar o GeoDataFrame em um arquivo CSV
-    gdf.to_file(csv_path, driver='CSV')
+    # Salvar o DataFrame em um arquivo CSV
+    df.to_csv(csv_path, index=False)
 
     return jsonify({'message': 'Polígono salvo com sucesso!'}), 200
 
