@@ -11,8 +11,10 @@ os.makedirs(POLYGONS_DIR, exist_ok=True)
 
 @app.route('/insert-polygon', methods=['POST'])
 def insert_polygon():
+    print("Recebendo requisição...")  # Log para depuração
     # Receber os dados do frontend
     data = request.json
+    print("Dados recebidos:", data)  # Log para depuração    
     user_ID = data.get('user_ID')
     name = data.get('name')
     coordinates = data.get('coordinates')
